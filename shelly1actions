@@ -1,0 +1,113 @@
+blueprint:
+  name: Shelly Plus 1 Button actions
+  description: |
+    This blueprint is for the Shelly Plus 1 setup as button. It is for general
+    use.
+    Note: Best set the `Input/Output settings` to `Detached - Input is separated/not changing state of the output/relay` on the Shelly: `http:/<shelly-ip>/#/input/0/settings/io-settings`. 
+    In case you still want to control the primary output directly from the Shelly, create a local action: `http:/<shelly-ip>/#/input/0/create-action`.
+  domain: automation
+  input:
+    button:
+      name: button
+      description: Choose Shelly Plus 1
+      selector:
+        device:
+          manufacturer: Shelly
+          #model: SNSW-001X16EU #commented as for some users the devices are not showing
+          multiple: false
+    down:
+      name: Down
+      description: Action to run when BUTTON DOWN
+      default: []
+      selector:
+        action: {}
+    up:
+      name: Up
+      description: Action to run when BUTTON UP
+      default: []
+      selector:
+        action: {}
+    single:
+      name: Single short press
+      description: Action to run when SHORT press
+      default: []
+      selector:
+        action: {}
+    double:
+      name: Double short press
+      description: Action to run when DOUBLE SHORT press
+      default: []
+      selector:
+        action: {}
+    triple:
+      name: Triple short press
+      description: Action to run when TRIPLE SHORT press
+      default: []
+      selector:
+        action: {}
+    long:
+      name: Long press
+      description: Action to run when LONG press
+      default: []
+      selector:
+        action: {}
+  source_url: https://community.home-assistant.io/t/shelly-plus-1-button-action-blueprint/786242
+mode: restart
+max_exceeded: silent
+trigger:
+  - platform: device
+    device_id: !input button
+    domain: shelly
+    type: btn_down
+    subtype: button1
+    id: btn_down
+  - platform: device
+    device_id: !input button
+    domain: shelly
+    type: btn_up
+    subtype: button1
+    id: btn_up
+  - platform: device
+    device_id: !input button
+    domain: shelly
+    type: single_push
+    subtype: button1
+    id: btn_single
+  - platform: device
+    device_id: !input button
+    domain: shelly
+    type: double_push
+    subtype: button1
+    id: btn_double
+  - platform: device
+    device_id: !input button
+    domain: shelly
+    type: long_push
+    subtype: button1
+    id: btn_long
+action:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: btn_down
+        sequence: !input down
+      - conditions:
+          - condition: trigger
+            id: btn_up
+        sequence: !input up
+      - conditions:
+          - condition: trigger
+            id: btn_single
+        sequence: !input single
+      - conditions:
+          - condition: trigger
+            id: btn_double
+        sequence: !input double
+      - conditions:
+          - condition: trigger
+            id: btn_triple
+        sequence: !input triple
+      - conditions:
+          - condition: trigger
+            id: btn_long
+        sequence: !input long
